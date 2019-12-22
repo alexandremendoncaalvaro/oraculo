@@ -10,19 +10,19 @@ class AppointmentData {
 
 final appointments = [
   AppointmentData(
-    startTime: DateTime(2019, 12, 22, 00, 15),
-    endTime: DateTime(2019, 12, 22, 02, 10),
-    subject: 'Alexandre Alvaro Fandangueira',
+    startTime: DateTime(2019, 12, 22, 15, 30),
+    endTime: DateTime(2019, 12, 22, 16, 45),
+    subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
   ),
   AppointmentData(
-    startTime: DateTime(2019, 12, 22, 09, 00),
-    endTime: DateTime(2019, 12, 22, 10, 00),
+    startTime: DateTime(2019, 12, 22, 17, 00),
+    endTime: DateTime(2019, 12, 22, 17, 43),
     subject: 'Estranho fazendo estranhezas',
   ),
   AppointmentData(
-    startTime: DateTime(2019, 12, 22, 14, 00),
-    endTime: DateTime(2019, 12, 22, 15, 50),
-    subject: 'Pepe Moreno Desmontar ventilador',
+    startTime: DateTime(2019, 12, 22, 18, 00),
+    endTime: DateTime(2019, 12, 22, 19, 50),
+    subject: 'Agente 007 Sem tempo irmão',
   )
 ];
 
@@ -189,7 +189,6 @@ class AppointmentContainer extends StatelessWidget {
     var nowHour = DateTime(DateTime.now().year, DateTime.now().month,
         DateTime.now().day, DateTime.now().hour, 0);
 
-    // print(startHour.difference(nowHour).inMinutes);
     if (startHour.difference(nowHour).inMinutes < 0) {
       startTime = nowHour;
     }
@@ -215,7 +214,6 @@ class AppointmentContainer extends StatelessWidget {
         color: Color.fromARGB(colorAlpha(), 245, 245, 245),
         margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
         padding: EdgeInsets.all(10),
-        // alignment: Alignment.center,
         child: Text(
           '${DateFormat.Hm().format(this.appointmentData.startTime)} - ${DateFormat.Hm().format(this.appointmentData.endTime)} ${this.appointmentData.subject}',
           style: TextStyle(color: fontColor()),
