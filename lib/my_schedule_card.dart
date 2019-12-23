@@ -1,94 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-class AppointmentData {
-  DateTime startTime;
-  DateTime endTime;
-  String subject;
-  AppointmentData({this.startTime, this.endTime, this.subject});
-}
-
-final appointments = [
-  AppointmentData(
-    startTime: DateTime(2019, 12, 22, 15, 30),
-    endTime: DateTime(2019, 12, 22, 16, 45),
-    subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
-  ),
-  AppointmentData(
-    startTime: DateTime(2019, 12, 22, 17, 00),
-    endTime: DateTime(2019, 12, 22, 17, 43),
-    subject: 'Estranho fazendo estranhezas',
-  ),
-  AppointmentData(
-    startTime: DateTime(2019, 12, 22, 18, 00),
-    endTime: DateTime(2019, 12, 22, 19, 50),
-    subject: 'Agente 007 Sem tempo irmão',
-  )
-];
+import 'package:oraculo/appointment.dart';
 
 class MyScheduleCard extends StatelessWidget {
   final Color textColor = Color.fromARGB(255, 110, 110, 110);
 
   @override
   Widget build(BuildContext context) {
-    final yesterdayEnd = DateTime(DateTime.now().year, DateTime.now().month,
-        DateTime.now().day - 1, 23, 59);
+    final appointments = [
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 09, 30),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 45),
+        subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 00),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 30),
+        subject: 'Estranho fazendo estranhezas',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 15, 00),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 15, 50),
+        subject: 'Agente 007 Sem tempo irmão',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 17, 00),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 18, 00),
+        subject: 'Noel Preparação para o Natal',
+      ),
+    ];
 
-    final tomorowStart = DateTime(DateTime.now().year, DateTime.now().month,
-        DateTime.now().day + 1, 0, 0);
-
-    final todayFromNowAppointments = appointments
-        .where((a) =>
-            (a.endTime.hour >= DateTime.now().hour) &
-            a.endTime.isBefore(tomorowStart) &
-            a.endTime.isAfter(yesterdayEnd))
-        .toList();
-
-    var schedule = [];
-    for (var i = 0; i < todayFromNowAppointments.length; i++) {
-      var blankAppointment = AppointmentData(subject: "Livre");
-      final currentHour = DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, DateTime.now().hour, 0);
-      if (i == 0) {
-        if (todayFromNowAppointments[0]
-                .startTime
-                .difference(DateTime.now())
-                .inMinutes >
-            0) {
-          blankAppointment.startTime = currentHour;
-          blankAppointment.endTime = todayFromNowAppointments[i].startTime;
-          schedule.add(blankAppointment);
-        }
-      } else {
-        print(todayFromNowAppointments[i]
-            .startTime
-            .difference(todayFromNowAppointments[i - 1].endTime)
-            .inMinutes);
-        if (todayFromNowAppointments[i]
-                .startTime
-                .difference(todayFromNowAppointments[i - 1].endTime)
-                .inMinutes >
-            0) {
-          blankAppointment.startTime = todayFromNowAppointments[i - 1].endTime;
-          blankAppointment.endTime = todayFromNowAppointments[i].startTime;
-          schedule.add(blankAppointment);
-        }
-      }
-      schedule.add(todayFromNowAppointments[i]);
-      if (i == todayFromNowAppointments.length - 1) {
-        if (tomorowStart
-                .difference(todayFromNowAppointments[i].endTime)
-                .inMinutes >
-            1) {
-          var lastBlankAppointment = AppointmentData(
-            subject: "Livre",
-            startTime: todayFromNowAppointments[i].endTime,
-            endTime: tomorowStart.subtract(Duration(minutes: 1)),
-          );
-          schedule.add(lastBlankAppointment);
-        }
-      }
-    }
+    final schedule = Appointments(appointments).getSchedule();
 
     return Column(
       children: <Widget>[
