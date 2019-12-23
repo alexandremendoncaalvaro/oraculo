@@ -13,27 +13,27 @@ class MyScheduleCard extends StatelessWidget {
     AppointmentData currentAppointment = schedule
         .where((a) => a.startTime.isBefore(now) & a.endTime.isAfter(now))
         .first;
-    final labelCurrentMinutePosition = (DateTime.now().minute * 4.0);
+    final labelCurrentMinutePosition = (DateTime.now().minute * 4.0) + 1;
     var backgroundColor =
         currentAppointment.subject != "Livre" ? Colors.red : Colors.green;
 
     return Column(
       children: <Widget>[
+        // Expanded(
+        //   flex: 1,
+        //   child: Container(
+        //     alignment: Alignment.center,
+        //     child: Text(
+        //       'Próximas reuniões:',
+        //       style: TextStyle(
+        //         fontSize: 22,
+        //         color: textColor,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Expanded(
-          flex: 1,
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Próximas reuniões:',
-              style: TextStyle(
-                fontSize: 22,
-                color: textColor,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 9,
+          flex: 10,
           child: Container(
             // color: Color.fromARGB(255, 200, 200, 200),
             decoration: BoxDecoration(
@@ -72,14 +72,21 @@ class MyScheduleCard extends StatelessWidget {
                           child: Column(
                             children: <Widget>[
                               Container(
-                                height: 4,
+                                alignment: Alignment.center,
+                                height: 24,
                                 width: 100,
-                                color: backgroundColor,
-                              ),
-                              Text(
-                                '${DateFormat.Hm().format(DateTime.now())}',
-                                style: TextStyle(
-                                    color: backgroundColor, fontSize: 16),
+                                decoration: BoxDecoration(
+                                  color: backgroundColor,
+                                  // border: Border(
+                                  //     top: BorderSide(
+                                  //         width: 1.0,
+                                  //         color: Color.fromARGB(150, 0, 0, 0))),
+                                ),
+                                child: Text(
+                                  '${DateFormat.Hm().format(DateTime.now())}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
                               ),
                             ],
                           ),
@@ -124,7 +131,7 @@ class HourTimeline extends StatelessWidget {
         alignment: Alignment.topCenter,
         child: Text(
           this.hour,
-          style: TextStyle(color: Color.fromARGB(255, 150, 150, 150)),
+          style: TextStyle(color: Color.fromARGB(255, 200, 200, 200)),
         ),
       ),
     );

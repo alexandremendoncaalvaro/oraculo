@@ -29,9 +29,9 @@ final appointments = [
       ),
       AppointmentData(
         startTime: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 15, 22),
+            DateTime.now().day, 16, 10),
         endTime: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 16, 00),
+            DateTime.now().day, 16, 22),
         subject: 'Man Bugar o shape!',
       ),
       AppointmentData(
