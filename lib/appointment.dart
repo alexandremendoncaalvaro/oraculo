@@ -5,6 +5,37 @@ class AppointmentData {
   AppointmentData({this.startTime, this.endTime, this.subject});
 }
 
+final appointments = [
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 11, 20),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 12, 04),
+        subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 12, 10),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 12, 40),
+        subject: 'Estranho fazendo estranhezas',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 13, 00),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 14, 30),
+        subject: 'Agente 007 Sem tempo irmão',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 17, 00),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 18, 00),
+        subject: 'Noel Preparação para o Natal',
+      ),
+    ];
+
 class Appointments {
   final List<AppointmentData> appointments;
   Appointments(this.appointments);
@@ -30,20 +61,22 @@ class Appointments {
       final currentHour = DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day, DateTime.now().hour, 0);
       if (i == 0) {
-        if (todayFromNowAppointments[0]
-                .startTime
-                .difference(DateTime.now())
-                .inMinutes >
-            0) {
+        // print('diferenca ${todayFromNowAppointments[0].startTime.difference(DateTime.now()).inMinutes}');
+        if (todayFromNowAppointments[0].startTime.hour == DateTime.now().hour ||
+            todayFromNowAppointments[0]
+                    .startTime
+                    .difference(DateTime.now())
+                    .inMinutes >
+                0) {
           blankAppointment.startTime = currentHour;
           blankAppointment.endTime = todayFromNowAppointments[i].startTime;
           schedule.add(blankAppointment);
         }
       } else {
-        print(todayFromNowAppointments[i]
-            .startTime
-            .difference(todayFromNowAppointments[i - 1].endTime)
-            .inMinutes);
+        // print(todayFromNowAppointments[i]
+        //     .startTime
+        //     .difference(todayFromNowAppointments[i - 1].endTime)
+        //     .inMinutes);
         if (todayFromNowAppointments[i]
                 .startTime
                 .difference(todayFromNowAppointments[i - 1].endTime)

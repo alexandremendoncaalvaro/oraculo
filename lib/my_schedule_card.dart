@@ -7,28 +7,6 @@ class MyScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appointments = [
-      AppointmentData(
-        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 09, 30),
-        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 45),
-        subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
-      ),
-      AppointmentData(
-        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 00),
-        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 30),
-        subject: 'Estranho fazendo estranhezas',
-      ),
-      AppointmentData(
-        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 15, 00),
-        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 15, 50),
-        subject: 'Agente 007 Sem tempo irmão',
-      ),
-      AppointmentData(
-        startTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 17, 00),
-        endTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 18, 00),
-        subject: 'Noel Preparação para o Natal',
-      ),
-    ];
 
     final schedule = Appointments(appointments).getSchedule();
 
@@ -50,7 +28,13 @@ class MyScheduleCard extends StatelessWidget {
         Expanded(
           flex: 9,
           child: Container(
-            // color: Colors.red,
+            // color: Color.fromARGB(255, 200, 200, 200),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+              Color.fromARGB(255, 230, 230, 230),
+              Color.fromARGB(255, 245, 245, 255),
+              Color.fromARGB(255, 230, 230, 230),
+            ])),
             child: ListView(
               padding: EdgeInsets.all(0),
               children: <Widget>[
@@ -141,10 +125,23 @@ class AppointmentContainer extends StatelessWidget {
     return appointmentData.subject != "Livre" ? 255 : 0;
   }
 
+  List<BoxShadow> boxShadow() {
+    return appointmentData.subject != "Livre"
+        ? [BoxShadow(color: Color.fromARGB(50, 0, 0, 0), blurRadius: 2)]
+        : null;
+  }
+
   Color fontColor() {
     return appointmentData.subject != "Livre"
         ? Color.fromARGB(255, 150, 50, 50)
         : Color.fromARGB(255, 50, 150, 50);
+  }
+
+  Color backgroundColor() {
+    var now = DateTime.now();
+    return appointmentData.startTime.isBefore(now) & appointmentData.endTime.isAfter(now)
+        ? Color.fromARGB(colorAlpha(), 255, 225, 225)
+        : Color.fromARGB(colorAlpha(), 245, 245, 245);
   }
 
   @override
@@ -153,9 +150,12 @@ class AppointmentContainer extends StatelessWidget {
       height: duration(),
       width: double.infinity,
       child: Container(
-        color: Color.fromARGB(colorAlpha(), 245, 245, 245),
         margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
         padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: backgroundColor(),
+          boxShadow: null, //boxShadow(),
+        ),
         child: Text(
           '${DateFormat.Hm().format(this.appointmentData.startTime)} - ${DateFormat.Hm().format(this.appointmentData.endTime)} ${this.appointmentData.subject}',
           style: TextStyle(color: fontColor()),
