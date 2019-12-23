@@ -7,8 +7,15 @@ class MyScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final schedule = Appointments(appointments).getSchedule();
+
+    var now = DateTime.now();
+    AppointmentData currentAppointment = schedule
+        .where((a) => a.startTime.isBefore(now) & a.endTime.isAfter(now))
+        .first;
+    final labelCurrentMinutePosition = (DateTime.now().minute * 4.0);
+    var backgroundColor =
+        currentAppointment.subject != "Livre" ? Colors.red : Colors.green;
 
     return Column(
       children: <Widget>[
@@ -41,21 +48,43 @@ class MyScheduleCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Column(
-                      children:
-                          List.generate(24 - DateTime.now().hour, (index) {
-                        return Row(
-                          children: <Widget>[
-                            Column(
+                    Stack(
+                      children: <Widget>[
+                        Column(
+                          children:
+                              List.generate(24 - DateTime.now().hour, (index) {
+                            return Row(
                               children: <Widget>[
-                                HourTimeline(
-                                  '${(DateTime.now().hour + index).toString().padLeft(2, '0')}:00',
-                                )
+                                Column(
+                                  children: <Widget>[
+                                    HourTimeline(
+                                      '${(DateTime.now().hour + index).toString().padLeft(2, '0')}:00',
+                                    )
+                                  ],
+                                ),
                               ],
-                            ),
-                          ],
-                        );
-                      }),
+                            );
+                          }),
+                        ),
+                        Positioned(
+                          // height: 20,
+                          top: labelCurrentMinutePosition,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                height: 4,
+                                width: 100,
+                                color: backgroundColor,
+                              ),
+                              Text(
+                                '${DateFormat.Hm().format(DateTime.now())}',
+                                style: TextStyle(
+                                    color: backgroundColor, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     Expanded(
                       child: Container(
@@ -92,7 +121,7 @@ class HourTimeline extends StatelessWidget {
         width: 90,
         margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
         padding: EdgeInsets.all(10),
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         child: Text(
           this.hour,
           style: TextStyle(color: Color.fromARGB(255, 150, 150, 150)),
@@ -137,9 +166,16 @@ class AppointmentContainer extends StatelessWidget {
         : Color.fromARGB(255, 50, 150, 50);
   }
 
+  BorderSide border() {
+    return appointmentData.subject != "Livre"
+        ? BorderSide(width: 1.0, color: Color.fromARGB(30, 0, 0, 0))
+        : BorderSide.none;
+  }
+
   Color backgroundColor() {
     var now = DateTime.now();
-    return appointmentData.startTime.isBefore(now) & appointmentData.endTime.isAfter(now)
+    return appointmentData.startTime.isBefore(now) &
+            appointmentData.endTime.isAfter(now)
         ? Color.fromARGB(colorAlpha(), 255, 225, 225)
         : Color.fromARGB(colorAlpha(), 245, 245, 245);
   }
@@ -151,13 +187,14 @@ class AppointmentContainer extends StatelessWidget {
       width: double.infinity,
       child: Container(
         margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
         decoration: BoxDecoration(
           color: backgroundColor(),
-          boxShadow: null, //boxShadow(),
+          border: Border(
+              top: border(), bottom: border(), left: border(), right: border()),
         ),
         child: Text(
-          '${DateFormat.Hm().format(this.appointmentData.startTime)} - ${DateFormat.Hm().format(this.appointmentData.endTime)} ${this.appointmentData.subject}',
+          '${DateFormat.Hm().format(this.appointmentData.startTime)}~${DateFormat.Hm().format(this.appointmentData.endTime)} | ${this.appointmentData.subject}',
           style: TextStyle(color: fontColor()),
         ),
       ),

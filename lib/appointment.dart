@@ -22,10 +22,17 @@ final appointments = [
       ),
       AppointmentData(
         startTime: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 13, 00),
+            DateTime.now().day, 14, 10),
         endTime: DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, 14, 30),
+            DateTime.now().day, 14, 12),
         subject: 'Agente 007 Sem tempo irmão',
+      ),
+      AppointmentData(
+        startTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 15, 22),
+        endTime: DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, 16, 00),
+        subject: 'Man Bugar o shape!',
       ),
       AppointmentData(
         startTime: DateTime(DateTime.now().year, DateTime.now().month,
