@@ -63,7 +63,7 @@ class MyRoomCheckinButton extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            print('Teste');
+            print('check-in');
           },
         ),
       ),

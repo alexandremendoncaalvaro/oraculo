@@ -70,29 +70,40 @@ class _MyHomePageState extends State<MyHomePage> {
       AppointmentData currentAppointment = schedule
           .where((a) => a.startTime.isBefore(now) & a.endTime.isAfter(now))
           .first;
+      var nextAppointments = schedule
+          .where((a) =>
+              (a.subject != 'Livre') &
+              a.startTime.subtract(Duration(minutes: 15)).isBefore(now) &
+              a.endTime.isAfter(now));
+      AppointmentData nextAppointment = nextAppointments.isNotEmpty ? nextAppointments.first : null;
+      
+      var blankContainer = Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '${DateFormat.Hm().format(currentAppointment.startTime)} - ${DateFormat.Hm().format(currentAppointment.endTime)}',
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+            Text(
+              currentAppointment.subject,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      );
       if (currentAppointment.subject != "Livre") {
-        var blankContainer = Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '${DateFormat.Hm().format(currentAppointment.startTime)} - ${DateFormat.Hm().format(currentAppointment.endTime)}',
-                style: TextStyle(
-                  fontSize: 22,
-                ),
-              ),
-              Text(
-                currentAppointment.subject,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        );
         currentStatusText = 'OCUPADA';
         currentStatusBackgroundColor = Colors.red;
         checkinButton = blankContainer;
+      }else{
+        if(nextAppointment == null){
+          checkinButton = blankContainer;
+        }
       }
     }
 

@@ -13,7 +13,8 @@ class MyScheduleCard extends StatelessWidget {
     AppointmentData currentAppointment = schedule
         .where((a) => a.startTime.isBefore(now) & a.endTime.isAfter(now))
         .first;
-    final labelCurrentMinutePosition = (DateTime.now().minute * 4.0) + 1;
+
+    final labelCurrentMinutePosition = (DateTime.now().minute * 4.0) + (DateTime.now().second / 15.0).floor();
     var backgroundColor =
         currentAppointment.subject != "Livre" ? Colors.red : Colors.green;
 
@@ -127,7 +128,7 @@ class HourTimeline extends StatelessWidget {
         color: Color.fromARGB(255, 245, 245, 245),
         width: 90,
         margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(0),
         alignment: Alignment.topCenter,
         child: Text(
           this.hour,
