@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:oraculo/controllers/appointment_controller.dart';
 import 'package:oraculo/models/appointment_model.dart';
 import 'package:oraculo/helpers/time_helper.dart';
@@ -16,9 +17,10 @@ class RoomStatusView extends StatelessWidget {
   static const TEXT_MEETING_CANCELLED =
       'Reunião atual cancelada por não comparecimento\nSala livre para novos agendamentos';
 
-  static const TEXT_MEETING_STARTED = 'Começou';
+  static const TEXT_MEETING_STARTED = 'check-in ok!';
 
-  static const TEXT_FREE_ROOM = 'A sala está livre para uso\nmas, poderá ser reservada a qualquer momento';
+  static const TEXT_FREE_ROOM =
+      'A sala está livre para uso\nmas, poderá ser reservada a qualquer momento';
 
   final _timeHelper = TimeHelper();
   final _theme = DefaultTheme();
@@ -127,22 +129,10 @@ class RoomStatusView extends StatelessWidget {
   }
 
   _buildStatusBottomWidget(
-      AppointmentStatus currentRoomStatus,
+      {AppointmentStatus currentRoomStatus,
       AppointmentModel startedAppointment,
-      AppointmentModel readyToCheckinAppointment) {
-    if (startedAppointment?.status == AppointmentStatus.STARTED) {
-      return Container(
-        color: Colors.red,
-        alignment: Alignment.center,
-        child: Text(
-          TEXT_MEETING_STARTED,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 26,
-          ),
-        ),
-      );
-    }
+      AppointmentModel readyToCheckinAppointment,
+      AppointmentModel cancelledAppointment}) {
 
     if (readyToCheckinAppointment?.status == AppointmentStatus.CHECKIN) {
       return Padding(
@@ -158,11 +148,22 @@ class RoomStatusView extends StatelessWidget {
               ),
             ),
             color: Color.fromARGB(50, 0, 0, 0),
-            child: Text(
-              _getButtonCheckinText(readyToCheckinAppointment),
-              style: TextStyle(
-                fontSize: 36,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  _getButtonCheckinText(readyToCheckinAppointment),
+                  style: TextStyle(
+                    fontSize: 36,
+                  ),
+                ),
+                Text(
+                  readyToCheckinAppointment?.subject,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ],
             ),
             onPressed: () {
               readyToCheckinAppointment.status = AppointmentStatus.STARTED;
@@ -172,12 +173,12 @@ class RoomStatusView extends StatelessWidget {
       );
     }
 
-    if (currentRoomStatus == AppointmentStatus.CANCELLED) {
+    if (startedAppointment?.status == AppointmentStatus.STARTED) {
       return Container(
-        color: Colors.black,
+        color: Colors.red,
         alignment: Alignment.center,
         child: Text(
-          TEXT_MEETING_CANCELLED,
+          TEXT_MEETING_STARTED,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 26,
@@ -186,6 +187,24 @@ class RoomStatusView extends StatelessWidget {
       );
     }
 
+    if (cancelledAppointment != null) {
+      // print('ESTE: ${cancelledAppointment.endTime}');
+
+      if (_timeHelper.now.isBefore(cancelledAppointment.endTime) &&
+          cancelledAppointment.status == AppointmentStatus.CANCELLED) {
+        return Container(
+          color: Colors.black,
+          alignment: Alignment.center,
+          child: Text(
+            TEXT_MEETING_CANCELLED,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 26,
+            ),
+          ),
+        );
+      }
+    }
     return Container(
       alignment: Alignment.center,
       child: Text(
@@ -221,7 +240,7 @@ class RoomStatusView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Sala 4A | Marvin',
+                  '${DateFormat.Hms().format(_timeHelper.now)} | Sala 4A | Marvin',
                   style: TextStyle(
                     fontSize: 22,
                   ),
@@ -243,8 +262,11 @@ class RoomStatusView extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: _buildStatusBottomWidget(_currentRoomStatus,
-                _startedAppointment, _readyToCheckinAppointment),
+            child: _buildStatusBottomWidget(
+                currentRoomStatus: _currentRoomStatus,
+                startedAppointment: _startedAppointment,
+                readyToCheckinAppointment: _readyToCheckinAppointment,
+                cancelledAppointment: _cancelledAppointment),
           ),
         ],
       ),

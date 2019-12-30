@@ -5,42 +5,56 @@ import 'package:oraculo/helpers/time_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:oraculo/themes.dart';
 
-//TODO: Add Gesture Detector timer to reset the view on ociosity
-
-class RoomScheduleView extends StatelessWidget {
+class RoomScheduleView extends StatefulWidget {
   RoomScheduleView({
     Key key,
-    @required List<AppointmentModel> schedule,
-  })  : _schedule = schedule,
-        super(key: key);
+    @required this.schedule,
+    this.scrollCounter,
+    this.resetScrollCounterCallback,
+  }) : super(key: key);
 
-  final List<AppointmentModel> _schedule;
-  final _theme = DefaultTheme();
-  final _timeHelper = TimeHelper();
-
+  final List<AppointmentModel> schedule;
+  final int scrollCounter;
+  final Function resetScrollCounterCallback;
   static const PIXEl_HOUR_FACTOR = 6.0;
   static const TIMELINE_WIDTH = 90.0;
 
-  Container _buildAppointmentContainer(AppointmentModel appointment) {
-    double duration() {
-      var startTime = appointment.startTime;
-      var startHour = DateTime(
-          startTime.year, startTime.month, startTime.day, startTime.hour, 0);
-      if (startHour.difference(_timeHelper.nowHour).inMinutes < 0) {
-        startTime = _timeHelper.nowHour;
-      }
-      return appointment.endTime.difference(startTime).inMinutes *
-          PIXEl_HOUR_FACTOR;
-    }
+  @override
+  _RoomScheduleViewState createState() => _RoomScheduleViewState();
+}
 
+class _RoomScheduleViewState extends State<RoomScheduleView> {
+  final _theme = DefaultTheme();
+
+  final _timeHelper = TimeHelper();
+
+  final _scrollController = ScrollController();
+
+  Container _buildAppointmentContainer(AppointmentModel appointment) {
     var _border = BorderSide.none;
     var _colorAlpha = 0;
     var _fontColor = Color.fromARGB(255, 50, 150, 50);
 
-    if (appointment.subject != AppointmentController.FREE_ROOM_TEXT) {
-      _border = BorderSide(width: 1.0, color: Color.fromARGB(30, 0, 0, 0));
-      _colorAlpha = 255;
-      _fontColor = Color.fromARGB(255, 150, 50, 50);
+    void _getFreeRoomTheme() {
+      if (appointment.subject != AppointmentController.FREE_ROOM_TEXT) {
+        _border = BorderSide(width: 1.0, color: Color.fromARGB(30, 0, 0, 0));
+        _colorAlpha = 255;
+        _fontColor = Color.fromARGB(255, 150, 50, 50);
+      }
+    }
+
+    _getFreeRoomTheme();
+
+    double duration() {
+      var _startTime = appointment.viewStartTime;
+      var _startHour = DateTime(_startTime.year, _startTime.month,
+          _startTime.day, _startTime.hour, 0);
+      if (_startHour.difference(_timeHelper.nowHour).inMinutes < 0) {
+        _startTime = _timeHelper.nowHour;
+      }
+      var _duration = appointment.viewEndTime.difference(_startTime).inMinutes *
+          RoomScheduleView.PIXEl_HOUR_FACTOR;
+      return _duration < 0.0 ? 0.0 : _duration;
     }
 
     Color _backgroundColor() =>
@@ -51,21 +65,21 @@ class RoomScheduleView extends StatelessWidget {
 
     String _buildContainerStatusText(AppointmentModel appointment) {
       var _statusText = '';
-      //'[${appointment.status.toString().substring(appointment.status.toString().indexOf('.') + 1)}]',
-      if(appointment.subject == AppointmentController.FREE_ROOM_TEXT) return _statusText;
+      if (appointment.subject == AppointmentController.FREE_ROOM_TEXT)
+        return _statusText;
 
       switch (appointment.status) {
         case AppointmentStatus.CANCELLED:
           _statusText = 'CANCELADA';
           break;
         case AppointmentStatus.CHECKIN:
-          _statusText = 'CHECKIN';
+          _statusText = 'CHECK-IN';
           break;
         case AppointmentStatus.ENDED:
           _statusText = 'FINALIZADA';
           break;
         case AppointmentStatus.STARTED:
-          _statusText = 'INICIADA';
+          _statusText = 'CHECK-IN OK!';
           break;
         case AppointmentStatus.UPCOMMING:
           _statusText = 'AGENDADA';
@@ -87,13 +101,13 @@ class RoomScheduleView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          appointment.status == AppointmentStatus.CHECKIN
-              ? Icon(
-                  Icons.star,
-                  size: 15,
-                  color: _theme.primaryColorReadyToCheckinRoom,
-                )
-              : Container(),
+          // appointment.status == AppointmentStatus.CHECKIN
+          //     ? Icon(
+          //         Icons.star,
+          //         size: 15,
+          //         color: _theme.primaryColorReadyToCheckinRoom,
+          //       )
+          //     : Container(),
           Text(
             '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)} ${appointment.subject}',
             style: TextStyle(color: _fontColor),
@@ -128,10 +142,10 @@ class RoomScheduleView extends StatelessWidget {
           Column(
             children: <Widget>[
               Container(
-                height: 60 * PIXEl_HOUR_FACTOR,
+                height: 60 * RoomScheduleView.PIXEl_HOUR_FACTOR,
                 child: Container(
                   color: _theme.backgroundColorTimeline,
-                  width: TIMELINE_WIDTH,
+                  width: RoomScheduleView.TIMELINE_WIDTH,
                   margin: EdgeInsets.fromLTRB(5, 2, 5, 2),
                   padding: EdgeInsets.all(0),
                   alignment: Alignment.topCenter,
@@ -149,9 +163,10 @@ class RoomScheduleView extends StatelessWidget {
   }
 
   _buildFloatingBannerCurrentTime() {
-    final _currenTimeToHeight = (_timeHelper.now.minute * PIXEl_HOUR_FACTOR) +
-        (_timeHelper.now.second / (60 / PIXEl_HOUR_FACTOR)).floor();
-
+    final _currenTimeToHeight =
+        (_timeHelper.now.minute * RoomScheduleView.PIXEl_HOUR_FACTOR) +
+            (_timeHelper.now.second / (60 / RoomScheduleView.PIXEl_HOUR_FACTOR))
+                .floor();
     return Positioned(
       top: _currenTimeToHeight,
       child: Column(
@@ -160,7 +175,7 @@ class RoomScheduleView extends StatelessWidget {
             alignment: Alignment.center,
             padding: EdgeInsets.all(0),
             height: 24,
-            width: TIMELINE_WIDTH + 10,
+            width: RoomScheduleView.TIMELINE_WIDTH + 10,
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
@@ -170,7 +185,7 @@ class RoomScheduleView extends StatelessWidget {
             ),
             child: Container(
               color: _theme.backgroundColorTimeline,
-              width: TIMELINE_WIDTH,
+              width: RoomScheduleView.TIMELINE_WIDTH,
               alignment: Alignment.center,
               child: Text(
                 '${DateFormat.Hms().format(_timeHelper.now)}',
@@ -188,6 +203,44 @@ class RoomScheduleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _resetScrollWhenIdle() {
+      if (_scrollController.hasClients) {
+        final _position = _scrollController.position.pixels;
+
+        if (widget.scrollCounter >= 10 && _position > 0.0) {
+          _scrollController.animateTo(
+            0.0,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 300),
+          );
+        }
+      }
+    }
+
+    widget.schedule.asMap().forEach((k, a) {
+      if (a.status == AppointmentStatus.CANCELLED) {
+        a.viewEndTime =
+            _timeHelper.fromDateTime(a.startTime.add(Duration(minutes: 5)));
+        if (widget.schedule[k + 1].subject ==
+            AppointmentController.FREE_ROOM_TEXT) {
+          widget.schedule[k + 1].startTime =
+              _timeHelper.fromDateTime(a.viewEndTime);
+        }else{
+          a.viewEndTime = _timeHelper.fromDateTime(widget.schedule[k + 1].startTime);
+          //TODO: Substituir por Blank Cointainer
+        }
+
+        if (a.viewEndTime.isBefore(_timeHelper.nowHour)) {
+          a.startTime = _timeHelper.fromDateTime(a.viewEndTime);
+        }
+      } else {
+        a.viewEndTime = _timeHelper.fromDateTime(a.endTime);
+      }
+      a.viewStartTime = _timeHelper.fromDateTime(a.startTime);
+    });
+
+    _resetScrollWhenIdle();
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
@@ -195,29 +248,38 @@ class RoomScheduleView extends StatelessWidget {
         Color.fromARGB(255, 245, 245, 255),
         Color.fromARGB(255, 230, 230, 230),
       ])),
-      child: ListView(
-        padding: EdgeInsets.all(0),
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Column(
-                    children: _buildHourTimeLine(),
-                  ),
-                  _buildFloatingBannerCurrentTime(),
-                ],
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: _buildScheduleList(_schedule),
+      child: NotificationListener(
+        onNotification: (t) {
+          if (t is ScrollEndNotification) {
+            widget.resetScrollCounterCallback();
+          }
+          return true;
+        },
+        child: ListView(
+          controller: _scrollController,
+          padding: EdgeInsets.all(0),
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    Column(
+                      children: _buildHourTimeLine(),
+                    ),
+                    _buildFloatingBannerCurrentTime(),
+                  ],
                 ),
-              )
-            ],
-          ),
-        ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildScheduleList(widget.schedule),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

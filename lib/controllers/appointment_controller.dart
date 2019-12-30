@@ -11,30 +11,30 @@ class AppointmentController {
   List<AppointmentModel> _appointments = [
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 02, 00),
+          DateTime.now().day, 10, 30),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 12, 04),
+          DateTime.now().day, 11, 30),
       subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 12, 10),
+          DateTime.now().day, 15, 23),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 12, 40),
+          DateTime.now().day, 16, 20),
       subject: 'Estranho fazendo estranhezas',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 16, 30),
+          DateTime.now().day, 18, 00),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 17, 00),
+          DateTime.now().day, 19, 20),
       subject: 'Agente 007 Sem tempo irmão',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 19,00),
+          DateTime.now().day, 19,20),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 21, 22),
+          DateTime.now().day, 20, 00),
       subject: 'Man Bugar o shape!',
     ),
     AppointmentModel(

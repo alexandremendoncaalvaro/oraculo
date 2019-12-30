@@ -16,6 +16,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   Timer _timerRenderClock;
+  int _scrollCounter = 0;
 
   @override
   initState() {
@@ -25,7 +26,15 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _renderClock() {
-    setState(() {});
+    setState(() {
+      _scrollCounter++;
+    });
+  }
+
+  void _resetScrollCounter() {
+    setState(() {
+      _scrollCounter = 0;
+    });
   }
 
   @override
@@ -49,7 +58,10 @@ class _HomeViewState extends State<HomeView> {
               ),
               Expanded(
                 flex: 5,
-                child: RoomScheduleView(schedule: _schedule),
+                child: RoomScheduleView(
+                    schedule: _schedule,
+                    scrollCounter: _scrollCounter,
+                    resetScrollCounterCallback: _resetScrollCounter),
               ),
             ],
           );
@@ -58,4 +70,3 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
