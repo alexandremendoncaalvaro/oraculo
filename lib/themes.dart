@@ -13,4 +13,5 @@ class DefaultTheme {
   Color primaryColorBusyRoom = Colors.red;
   Color primaryColorReadyToCheckinRoom = Colors.blue;
   Color primaryColorCancelledRoom = Colors.green;
+  Color backgroundColorTimeline = Color.fromARGB(255, 245, 245, 245);
 }

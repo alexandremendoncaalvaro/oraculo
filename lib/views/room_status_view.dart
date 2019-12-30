@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:oraculo/controllers/appointment_controller.dart';
 import 'package:oraculo/models/appointment_model.dart';
 import 'package:oraculo/helpers/time_helper.dart';
-import 'package:intl/intl.dart';
 import 'package:oraculo/themes.dart';
 
 class RoomStatusView extends StatelessWidget {
@@ -14,13 +13,19 @@ class RoomStatusView extends StatelessWidget {
   })  : _schedule = schedule,
         super(key: key);
 
+  static const TEXT_MEETING_CANCELLED =
+      'Reunião atual cancelada por não comparecimento\nSala livre para novos agendamentos';
+
+  static const TEXT_MEETING_STARTED = 'Começou';
+
+  static const TEXT_FREE_ROOM = 'A sala está livre para uso\nmas, poderá ser reservada a qualquer momento';
+
   final _timeHelper = TimeHelper();
   final _theme = DefaultTheme();
 
   AppointmentModel _getReadyToCheckinAppointment(
       List<AppointmentModel> schedule) {
-    return schedule.firstWhere(
-        (a) => a.status == AppointmentStatus.CHECKIN,
+    return schedule.firstWhere((a) => a.status == AppointmentStatus.CHECKIN,
         orElse: () => null);
   }
 
@@ -45,7 +50,7 @@ class RoomStatusView extends StatelessWidget {
 
     final _currentAppointment = schedule.firstWhere(
         (a) =>
-            (a.subject != 'Livre') &&
+            (a.subject != AppointmentController.FREE_ROOM_TEXT) &&
             a.startTime
                 .subtract(Duration(
                     minutes: AppointmentController.MINUTES_TO_RELEASE_CHECKIN))
@@ -77,18 +82,20 @@ class RoomStatusView extends StatelessWidget {
       AppointmentModel cancelledAppointment}) {
     var _statusText = '';
     var _subText = '';
-    if (currentRoomStatus == AppointmentStatus.UPCOMMING) _statusText = 'LIVRE';
-    if (currentRoomStatus == AppointmentStatus.ENDED) _statusText = 'LIVRE';
+    if (currentRoomStatus == AppointmentStatus.UPCOMMING)
+      _statusText = AppointmentController.FREE_ROOM_TEXT;
+    if (currentRoomStatus == AppointmentStatus.ENDED)
+      _statusText = AppointmentController.FREE_ROOM_TEXT;
     if (currentRoomStatus == AppointmentStatus.STARTED) {
-      _statusText = 'OCUPADA';
+      _statusText = AppointmentController.BUSY_ROOM_TEXT;
       _subText = startedAppointment?.subject;
     }
     if (currentRoomStatus == AppointmentStatus.CHECKIN) {
-      _statusText = 'BREVE';
+      _statusText = AppointmentController.SOON_MEETING_ROOM_TEXT;
       _subText = readyToCheckinAppointment?.subject;
     }
     if (currentRoomStatus == AppointmentStatus.CANCELLED) {
-      _statusText = 'LIVRE';
+      _statusText = AppointmentController.FREE_ROOM_TEXT;
       _subText = '${cancelledAppointment?.subject}';
     }
 
@@ -112,9 +119,11 @@ class RoomStatusView extends StatelessWidget {
     ];
   }
 
-  String _getButtonCheckinText(AppointmentModel readyToCheckinAppointment){
-      var _remainingTime = readyToCheckinAppointment?.startTime?.add(Duration(minutes: 5))?.difference(_timeHelper.now);
-      return 'check-in (${_remainingTime?.inMinutes?.remainder(60).toString().padLeft(2, '0')}:${_remainingTime?.inSeconds?.remainder(60).toString().padLeft(2, '0')})';
+  String _getButtonCheckinText(AppointmentModel readyToCheckinAppointment) {
+    var _remainingTime = readyToCheckinAppointment?.startTime
+        ?.add(Duration(minutes: 5))
+        ?.difference(_timeHelper.now);
+    return 'check-in (${_remainingTime?.inMinutes?.remainder(60).toString().padLeft(2, '0')}:${_remainingTime?.inSeconds?.remainder(60).toString().padLeft(2, '0')})';
   }
 
   _buildStatusBottomWidget(
@@ -126,7 +135,7 @@ class RoomStatusView extends StatelessWidget {
         color: Colors.red,
         alignment: Alignment.center,
         child: Text(
-          'Começou!',
+          TEXT_MEETING_STARTED,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 26,
@@ -134,6 +143,7 @@ class RoomStatusView extends StatelessWidget {
         ),
       );
     }
+
     if (readyToCheckinAppointment?.status == AppointmentStatus.CHECKIN) {
       return Padding(
         padding: const EdgeInsets.all(15.0),
@@ -156,7 +166,6 @@ class RoomStatusView extends StatelessWidget {
             ),
             onPressed: () {
               readyToCheckinAppointment.status = AppointmentStatus.STARTED;
-              print('check-in');
             },
           ),
         ),
@@ -168,7 +177,7 @@ class RoomStatusView extends StatelessWidget {
         color: Colors.black,
         alignment: Alignment.center,
         child: Text(
-          'Reunião atual cancelada por não comparecimento.\nSala livre para novos agendamentos.',
+          TEXT_MEETING_CANCELLED,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 26,
@@ -177,7 +186,16 @@ class RoomStatusView extends StatelessWidget {
       );
     }
 
-    return Container();
+    return Container(
+      alignment: Alignment.center,
+      child: Text(
+        TEXT_FREE_ROOM,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 26,
+        ),
+      ),
+    );
   }
 
   @override
@@ -203,7 +221,7 @@ class RoomStatusView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  '${DateFormat.Hms().format(_timeHelper.now)} | Sala 4A | Marvin',
+                  'Sala 4A | Marvin',
                   style: TextStyle(
                     fontSize: 22,
                   ),

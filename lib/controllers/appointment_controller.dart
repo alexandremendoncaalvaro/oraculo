@@ -3,6 +3,9 @@ import '../models/appointment_model.dart';
 
 class AppointmentController {
   static const MINUTES_TO_RELEASE_CHECKIN = 15;
+  static const FREE_ROOM_TEXT = 'LIVRE';
+  static const BUSY_ROOM_TEXT = 'OCUPADA';
+  static const SOON_MEETING_ROOM_TEXT = 'EM BREVE';
   final _timeHelper = TimeHelper();
 
   List<AppointmentModel> _appointments = [
@@ -36,9 +39,9 @@ class AppointmentController {
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 15),
+          DateTime.now().day, 23, 55),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 45),
+          DateTime.now().day, 23, 59),
       subject: 'Noel Preparação para o Natal',
     ),
   ];
@@ -50,7 +53,7 @@ class AppointmentController {
 
     final List<AppointmentModel> _todayFromNowAppointments =
         _appointments.where((a) {
-      if ((a.subject != 'Livre') &&
+      if ((a.subject != FREE_ROOM_TEXT) &&
           a.startTime
               .subtract(Duration(minutes: MINUTES_TO_RELEASE_CHECKIN))
               .isBefore(_timeHelper.now) &&
@@ -69,7 +72,7 @@ class AppointmentController {
 
     _getBlankAppointment(startTime, endTime) {
       return AppointmentModel(
-          subject: "Livre", startTime: startTime, endTime: endTime);
+          subject: FREE_ROOM_TEXT, startTime: startTime, endTime: endTime);
     }
 
     List<AppointmentModel> _finishExpiredAppointments(
@@ -77,7 +80,7 @@ class AppointmentController {
       schedule.forEach((a) {
         if ((a.status == AppointmentStatus.STARTED ||
                 a.status == AppointmentStatus.UPCOMMING ||
-                a.subject == 'Livre') &&
+                a.subject == FREE_ROOM_TEXT) &&
             _timeHelper.now.isAfter(a.endTime)) {
           a.status = AppointmentStatus.ENDED;
         }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oraculo/controllers/appointment_controller.dart';
 import 'package:oraculo/models/appointment_model.dart';
 import 'package:oraculo/helpers/time_helper.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,8 @@ class RoomScheduleView extends StatelessWidget {
   final _theme = DefaultTheme();
   final _timeHelper = TimeHelper();
 
-  static const PIXEl_HOUR_FACTOR = 4.0;
+  static const PIXEl_HOUR_FACTOR = 6.0;
+  static const TIMELINE_WIDTH = 90.0;
 
   Container _buildAppointmentContainer(AppointmentModel appointment) {
     double duration() {
@@ -31,15 +33,11 @@ class RoomScheduleView extends StatelessWidget {
 
     var _border = BorderSide.none;
     var _colorAlpha = 0;
-    List<BoxShadow> _boxShadow = [];
     var _fontColor = Color.fromARGB(255, 50, 150, 50);
 
-    if (appointment.subject != "Livre") {
+    if (appointment.subject != AppointmentController.FREE_ROOM_TEXT) {
       _border = BorderSide(width: 1.0, color: Color.fromARGB(30, 0, 0, 0));
       _colorAlpha = 255;
-      // _boxShadow = [
-      //   BoxShadow(color: Color.fromARGB(50, 0, 0, 0), blurRadius: 1)
-      // ];
       _fontColor = Color.fromARGB(255, 150, 50, 50);
     }
 
@@ -51,13 +49,12 @@ class RoomScheduleView extends StatelessWidget {
 
     return Container(
       height: duration(),
-      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
       padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
       decoration: BoxDecoration(
         color: _backgroundColor(),
         border: Border(
             top: _border, bottom: _border, left: _border, right: _border),
-        boxShadow: _boxShadow,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,10 +74,11 @@ class RoomScheduleView extends StatelessWidget {
             child: Container(
               alignment: Alignment.topRight,
               child: Text(
-                  '[${appointment.status.toString().substring(appointment.status.toString().indexOf('.') + 1)}]',
-                  style: TextStyle(
-                    color: Colors.deepPurple,
-                  ),),
+                '[${appointment.status.toString().substring(appointment.status.toString().indexOf('.') + 1)}]',
+                style: TextStyle(
+                  color: Colors.deepPurple,
+                ),
+              ),
             ),
           ),
         ],
@@ -104,9 +102,9 @@ class RoomScheduleView extends StatelessWidget {
               Container(
                 height: 60 * PIXEl_HOUR_FACTOR,
                 child: Container(
-                  color: Color.fromARGB(255, 245, 245, 245),
-                  width: 90,
-                  margin: EdgeInsets.fromLTRB(5, 2, 0, 2),
+                  color: _theme.backgroundColorTimeline,
+                  width: TIMELINE_WIDTH,
+                  margin: EdgeInsets.fromLTRB(5, 2, 5, 2),
                   padding: EdgeInsets.all(0),
                   alignment: Alignment.topCenter,
                   child: Text(
@@ -124,7 +122,7 @@ class RoomScheduleView extends StatelessWidget {
 
   _buildFloatingBannerCurrentTime() {
     final _currenTimeToHeight = (_timeHelper.now.minute * PIXEl_HOUR_FACTOR) +
-        (_timeHelper.now.second / 15.0).floor();
+        (_timeHelper.now.second / (60 / PIXEl_HOUR_FACTOR)).floor();
 
     return Positioned(
       top: _currenTimeToHeight,
@@ -132,14 +130,27 @@ class RoomScheduleView extends StatelessWidget {
         children: <Widget>[
           Container(
             alignment: Alignment.center,
+            padding: EdgeInsets.all(0),
             height: 24,
-            width: 100,
+            width: TIMELINE_WIDTH + 10,
             decoration: BoxDecoration(
-              color: Colors.blue,
+              border: Border(
+                top: BorderSide(
+                  color: Colors.red,
+                ),
+              ),
             ),
-            child: Text(
-              '${DateFormat.Hm().format(DateTime.now())}',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            child: Container(
+              color: _theme.backgroundColorTimeline,
+              width: TIMELINE_WIDTH,
+              alignment: Alignment.center,
+              child: Text(
+                '${DateFormat.Hms().format(_timeHelper.now)}',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
         ],
@@ -177,7 +188,7 @@ class RoomScheduleView extends StatelessWidget {
                 ),
               )
             ],
-          )
+          ),
         ],
       ),
     );
