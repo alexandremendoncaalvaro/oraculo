@@ -1,7 +1,7 @@
 name: oraculo
-description: A very new Flutter project.
+description: Oraculo is a flutter application that visualizes meeting room availability.
 
-version: 1.0.0+1
+version: 0.2.0+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -11,9 +11,11 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^0.1.2
   intl: ^0.16.0
+  provider: ^4.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 flutter:
   uses-material-design: true
