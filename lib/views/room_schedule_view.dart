@@ -5,6 +5,8 @@ import 'package:oraculo/helpers/time_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:oraculo/themes.dart';
 
+//TODO: Add Gesture Detector timer to reset the view on ociosity
+
 class RoomScheduleView extends StatelessWidget {
   RoomScheduleView({
     Key key,
@@ -47,10 +49,36 @@ class RoomScheduleView extends StatelessWidget {
             ? Color.fromARGB(_colorAlpha, 255, 225, 225)
             : Color.fromARGB(_colorAlpha, 245, 245, 245);
 
+    String _buildContainerStatusText(AppointmentModel appointment) {
+      var _statusText = '';
+      //'[${appointment.status.toString().substring(appointment.status.toString().indexOf('.') + 1)}]',
+      if(appointment.subject == AppointmentController.FREE_ROOM_TEXT) return _statusText;
+
+      switch (appointment.status) {
+        case AppointmentStatus.CANCELLED:
+          _statusText = 'CANCELADA';
+          break;
+        case AppointmentStatus.CHECKIN:
+          _statusText = 'CHECKIN';
+          break;
+        case AppointmentStatus.ENDED:
+          _statusText = 'FINALIZADA';
+          break;
+        case AppointmentStatus.STARTED:
+          _statusText = 'INICIADA';
+          break;
+        case AppointmentStatus.UPCOMMING:
+          _statusText = 'AGENDADA';
+          break;
+        default:
+      }
+      return '[$_statusText]';
+    }
+
     return Container(
       height: duration(),
       margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
-      padding: EdgeInsets.fromLTRB(5, 2, 0, 2),
+      padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
       decoration: BoxDecoration(
         color: _backgroundColor(),
         border: Border(
@@ -74,9 +102,9 @@ class RoomScheduleView extends StatelessWidget {
             child: Container(
               alignment: Alignment.topRight,
               child: Text(
-                '[${appointment.status.toString().substring(appointment.status.toString().indexOf('.') + 1)}]',
+                _buildContainerStatusText(appointment),
                 style: TextStyle(
-                  color: Colors.deepPurple,
+                  color: Colors.blueGrey,
                 ),
               ),
             ),

@@ -39,9 +39,9 @@ class AppointmentController {
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 55),
+          DateTime.now().day, 22, 30),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 59),
+          DateTime.now().day, 23, 15),
       subject: 'Noel Preparação para o Natal',
     ),
   ];
