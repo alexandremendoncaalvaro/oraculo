@@ -32,16 +32,16 @@ class AppointmentController {
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 15),
+          DateTime.now().day, 23, 30),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 25),
+          DateTime.now().day, 23, 40),
       subject: 'Man Bugar o shape!',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 30),
+          DateTime.now().day, 23, 50),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 45),
+          DateTime.now().day, 23, 59),
       subject: 'Noel Preparação para o Natal',
     ),
   ];

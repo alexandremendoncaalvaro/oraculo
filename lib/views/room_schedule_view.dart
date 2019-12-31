@@ -119,9 +119,23 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)} ${appointment.subject}',
-            style: TextStyle(color: _fontColor),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)}',
+                style: TextStyle(
+                  color: _fontColor,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                '${appointment.subject}',
+                style: TextStyle(
+                  color: _fontColor,
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: Container(
@@ -130,6 +144,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
                 _buildContainerStatusText(appointment),
                 style: TextStyle(
                   color: _fontColor,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -202,7 +217,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
                 '${DateFormat.Hms().format(_timeHelper.now)}',
                 style: TextStyle(
                   color: Colors.red,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ),
