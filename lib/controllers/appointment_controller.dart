@@ -32,16 +32,16 @@ class AppointmentController {
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 19,20),
+          DateTime.now().day, 23, 15),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 20, 00),
+          DateTime.now().day, 23, 25),
       subject: 'Man Bugar o shape!',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 22, 30),
+          DateTime.now().day, 23, 30),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 23, 15),
+          DateTime.now().day, 23, 45),
       subject: 'Noel Preparação para o Natal',
     ),
   ];
@@ -129,14 +129,18 @@ class AppointmentController {
             _appointment = _getBlankAppointment(
                 _todayFromNowAppointments[i - 1].endTime,
                 _todayFromNowAppointments[i].startTime);
-            _schedule.add(_appointment);
+          } else {
+            _appointment = _getBlankAppointment(
+                _todayFromNowAppointments[i - 1].endTime,
+                _todayFromNowAppointments[i - 1].endTime);
           }
+          _schedule.add(_appointment);
         }
         _schedule.add(_todayFromNowAppointments[i]);
       }
 
       final _lastAppointment = _schedule.last;
-      
+
       final hasAFreeTimeAfterCurrentAppointment = _timeHelper.tomorowStart
               .difference(_lastAppointment.endTime)
               .inMinutes >

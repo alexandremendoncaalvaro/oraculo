@@ -17,10 +17,10 @@ class RoomStatusView extends StatelessWidget {
   static const TEXT_MEETING_CANCELLED =
       'Reunião atual cancelada por não comparecimento\nSala livre para novos agendamentos';
 
-  static const TEXT_MEETING_STARTED = 'check-in ok!';
+  static const TEXT_MEETING_STARTED = 'check-in(s) confirmado(s)!';
 
   static const TEXT_FREE_ROOM =
-      'A sala está livre para uso\nmas, poderá ser reservada a qualquer momento';
+      'Pode usar a sala, mas fica esperto\nse alguém agendar agora a reserva é dele.';
 
   final _timeHelper = TimeHelper();
   final _theme = DefaultTheme();
@@ -98,7 +98,7 @@ class RoomStatusView extends StatelessWidget {
     }
     if (currentRoomStatus == AppointmentStatus.CANCELLED) {
       _statusText = AppointmentController.FREE_ROOM_TEXT;
-      _subText = '${cancelledAppointment?.subject}';
+      _subText = '${DateFormat.Hm().format(cancelledAppointment?.startTime)}~${DateFormat.Hm().format(cancelledAppointment?.endTime)} ${cancelledAppointment?.subject}';
     }
 
     return [
@@ -147,7 +147,7 @@ class RoomStatusView extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            color: Color.fromARGB(50, 0, 0, 0),
+            color: Colors.blue[600],
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -188,8 +188,6 @@ class RoomStatusView extends StatelessWidget {
     }
 
     if (cancelledAppointment != null) {
-      // print('ESTE: ${cancelledAppointment.endTime}');
-
       if (_timeHelper.now.isBefore(cancelledAppointment.endTime) &&
           cancelledAppointment.status == AppointmentStatus.CANCELLED) {
         return Container(
