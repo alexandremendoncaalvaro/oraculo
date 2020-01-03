@@ -140,7 +140,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
                 children: [
                   TextSpan(
                     text:
-                        '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)} ',
+                        '${DateFormat.Hm().format(appointment.viewStartTime)}~${DateFormat.Hm().format(appointment.endTime)} ',
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                     ),
@@ -175,7 +175,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
   }
 
   _buildHourTimeLine() {
-    return List.generate(24 - _timeHelper.now.hour, (index) {
+    return List.generate(25 - _timeHelper.now.hour, (index) {
       return Row(
         children: <Widget>[
           Column(
@@ -189,7 +189,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
                   padding: EdgeInsets.all(0),
                   alignment: Alignment.topCenter,
                   child: Text(
-                    '${(DateTime.now().hour + index).toString().padLeft(2, '0')}:00',
+                    '${(_timeHelper.now.hour + index >= 24 ? 0 : _timeHelper.now.hour + index).toString().padLeft(2, '0')}:00',
                     style: TextStyle(color: Color.fromARGB(255, 200, 200, 200)),
                   ),
                 ),
@@ -263,7 +263,7 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
         a.viewEndTime =
             _timeHelper.fromDateTime(a.startTime.add(Duration(minutes: 5)));
 
-        if (k < widget.schedule.length) {
+        if (k < widget.schedule.length - 1) {
           if (widget.schedule[k + 1]?.subject ==
               AppointmentController.FREE_ROOM_TEXT) {
             widget.schedule[k + 1].viewStartTime =
