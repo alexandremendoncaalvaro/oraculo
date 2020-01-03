@@ -11,10 +11,10 @@ class AppointmentController {
   List<AppointmentModel> _appointments = [
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 10, 30),
+          DateTime.now().day, 01, 02),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 11, 30),
-      subject: 'Alexandre Alvaro Desenvolvimento Oraculo',
+          DateTime.now().day, 01, 58),
+      subject: 'Alexandre Alvaro Desenvolvimento Oraculo Dev Oraculo Desenvolvimento Oraculo',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,

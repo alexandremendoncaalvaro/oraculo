@@ -63,13 +63,19 @@ class RoomStatusView extends StatelessWidget {
     return _currentAppointment.status;
   }
 
-  Color _getBackgroundStatusColor(AppointmentStatus _currentRoomStatus) {
+  Color _getBackgroundStatusColor(AppointmentStatus _currentRoomStatus,
+      [AppointmentModel startedAppointment]) {
     if (_currentRoomStatus == AppointmentStatus.UPCOMMING)
       return _theme.primaryColorFreeRoom;
     if (_currentRoomStatus == AppointmentStatus.ENDED)
       return _theme.primaryColorFreeRoom;
-    if (_currentRoomStatus == AppointmentStatus.STARTED)
-      return _theme.primaryColorBusyRoom;
+    if (_currentRoomStatus == AppointmentStatus.STARTED) {
+      if (startedAppointment.startTime.isBefore(_timeHelper.now) &&
+          startedAppointment.endTime.isAfter(_timeHelper.now)) {
+        return _theme.primaryColorBusyRoom;
+      }
+      return _theme.primaryColorReadyToCheckinRoom;
+    }
     if (_currentRoomStatus == AppointmentStatus.CHECKIN)
       return _theme.primaryColorReadyToCheckinRoom;
     if (_currentRoomStatus == AppointmentStatus.CANCELLED)
@@ -89,8 +95,12 @@ class RoomStatusView extends StatelessWidget {
     if (currentRoomStatus == AppointmentStatus.ENDED)
       _statusText = AppointmentController.FREE_ROOM_TEXT;
     if (currentRoomStatus == AppointmentStatus.STARTED) {
-      _statusText = AppointmentController.BUSY_ROOM_TEXT;
+      _statusText = AppointmentController.SOON_MEETING_ROOM_TEXT;
       _subText = startedAppointment?.subject;
+      if (startedAppointment.startTime.isBefore(_timeHelper.now) &&
+          startedAppointment.endTime.isAfter(_timeHelper.now)) {
+        _statusText = AppointmentController.BUSY_ROOM_TEXT;
+      }
     }
     if (currentRoomStatus == AppointmentStatus.CHECKIN) {
       _statusText = AppointmentController.SOON_MEETING_ROOM_TEXT;
@@ -98,7 +108,8 @@ class RoomStatusView extends StatelessWidget {
     }
     if (currentRoomStatus == AppointmentStatus.CANCELLED) {
       _statusText = AppointmentController.FREE_ROOM_TEXT;
-      _subText = '${DateFormat.Hm().format(cancelledAppointment?.startTime)}~${DateFormat.Hm().format(cancelledAppointment?.endTime)} ${cancelledAppointment?.subject}';
+      _subText =
+          '${DateFormat.Hm().format(cancelledAppointment?.startTime)}~${DateFormat.Hm().format(cancelledAppointment?.endTime)} ${cancelledAppointment?.subject}';
     }
 
     return [
@@ -111,6 +122,7 @@ class RoomStatusView extends StatelessWidget {
       ),
       Text(
         _subText,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 26,
           decoration: currentRoomStatus == AppointmentStatus.CANCELLED
@@ -133,7 +145,6 @@ class RoomStatusView extends StatelessWidget {
       AppointmentModel startedAppointment,
       AppointmentModel readyToCheckinAppointment,
       AppointmentModel cancelledAppointment}) {
-
     if (readyToCheckinAppointment?.status == AppointmentStatus.CHECKIN) {
       return Padding(
         padding: const EdgeInsets.all(15.0),
@@ -174,8 +185,17 @@ class RoomStatusView extends StatelessWidget {
     }
 
     if (startedAppointment?.status == AppointmentStatus.STARTED) {
+      var _backgroundColor = Colors.red;
+      
+      // var _backgroundColor = Colors.blue;
+
+      // if (startedAppointment.startTime.isBefore(_timeHelper.now) &&
+      //     startedAppointment.endTime.isAfter(_timeHelper.now)) {
+      //   _backgroundColor = Colors.red;
+      // }
+
       return Container(
-        color: Colors.red,
+        color: _backgroundColor,
         alignment: Alignment.center,
         child: Text(
           TEXT_MEETING_STARTED,
@@ -229,7 +249,7 @@ class RoomStatusView extends StatelessWidget {
         _schedule, _startedAppointment, _readyToCheckinAppointment);
 
     return Container(
-      color: _getBackgroundStatusColor(_currentRoomStatus),
+      color: _getBackgroundStatusColor(_currentRoomStatus, _startedAppointment),
       child: Column(
         children: <Widget>[
           Expanded(

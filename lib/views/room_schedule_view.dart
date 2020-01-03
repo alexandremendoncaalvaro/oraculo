@@ -107,6 +107,17 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
       return '[$_statusText]';
     }
 
+    // Widget _subtext = Text(
+    //   '${appointment.subject}',
+    //   style: TextStyle(
+    //     color: _fontColor,
+    //   ),
+    // );
+
+    // if (duration() < 10 * RoomScheduleView.PIXEl_HOUR_FACTOR) {
+    //   _subtext = Container();
+    // }
+
     return Container(
       height: duration(),
       margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
@@ -119,33 +130,35 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)}',
-                style: TextStyle(
-                  color: _fontColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(
-                '${appointment.subject}',
-                style: TextStyle(
-                  color: _fontColor,
-                ),
-              ),
-            ],
-          ),
           Expanded(
-            child: Container(
-              alignment: Alignment.topRight,
-              child: Text(
-                _buildContainerStatusText(appointment),
+            child: RichText(
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
                 style: TextStyle(
                   color: _fontColor,
-                  fontWeight: FontWeight.w700,
                 ),
+                children: [
+                  TextSpan(
+                    text:
+                        '${DateFormat.Hm().format(appointment.startTime)}~${DateFormat.Hm().format(appointment.endTime)} ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${appointment?.subject}',
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.topRight,
+            child: Text(
+              _buildContainerStatusText(appointment),
+              style: TextStyle(
+                color: _fontColor,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
@@ -250,13 +263,15 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
         a.viewEndTime =
             _timeHelper.fromDateTime(a.startTime.add(Duration(minutes: 5)));
 
-        if (widget.schedule[k + 1].subject ==
-            AppointmentController.FREE_ROOM_TEXT) {
-          widget.schedule[k + 1].viewStartTime =
-              _timeHelper.fromDateTime(a.viewEndTime);
-        } else {
-          a.viewEndTime =
-              _timeHelper.fromDateTime(widget.schedule[k + 1].startTime);
+        if (k < widget.schedule.length) {
+          if (widget.schedule[k + 1]?.subject ==
+              AppointmentController.FREE_ROOM_TEXT) {
+            widget.schedule[k + 1].viewStartTime =
+                _timeHelper.fromDateTime(a.viewEndTime);
+          } else {
+            a.viewEndTime =
+                _timeHelper.fromDateTime(widget.schedule[k + 1].startTime);
+          }
         }
 
         if (a.viewEndTime.isBefore(_timeHelper.nowHour)) {
