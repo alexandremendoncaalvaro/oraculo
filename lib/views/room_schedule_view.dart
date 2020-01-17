@@ -32,6 +32,8 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
 
   Container _buildAppointmentContainer(AppointmentModel appointment) {
     // var _border = BorderSide.none;
+    final _border = BorderSide(width: 1.0, color: Color.fromARGB(30, 0, 0, 0));
+
     var _colorAlpha = 0.0;
     var _fontColor = Color.fromARGB(255, 50, 150, 50);
 
@@ -124,8 +126,8 @@ class _RoomScheduleViewState extends State<RoomScheduleView> {
       padding: EdgeInsets.fromLTRB(5, 2, 5, 2),
       decoration: BoxDecoration(
         color: _backgroundColor(),
-        // border: Border(
-        //     top: _border, bottom: _border, left: _border, right: _border),
+        border: Border(
+            top: _border, bottom: BorderSide.none, left: BorderSide.none, right: BorderSide.none),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
