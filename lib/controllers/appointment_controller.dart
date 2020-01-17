@@ -18,16 +18,16 @@ class AppointmentController {
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 15, 23),
+          DateTime.now().day, 14, 23),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 16, 20),
+          DateTime.now().day, 14, 40),
       subject: 'Estranho fazendo estranhezas',
     ),
     AppointmentModel(
       startTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 18, 00),
+          DateTime.now().day, 15, 00),
       endTime: DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 19, 20),
+          DateTime.now().day, 16, 00),
       subject: 'Agente 007 Sem tempo irmão',
     ),
     AppointmentModel(

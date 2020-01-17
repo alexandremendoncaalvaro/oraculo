@@ -20,7 +20,7 @@ class RoomStatusView extends StatelessWidget {
   static const TEXT_MEETING_STARTED = 'check-in(s) confirmado(s)!';
 
   static const TEXT_FREE_ROOM =
-      'Pode usar a sala, mas fica esperto\nse alguém agendar agora a reserva é dele.';
+      'Se ninguém reservar por agora\npode utlizar a sala normalmente.';
 
   final _timeHelper = TimeHelper();
   final _theme = DefaultTheme();
